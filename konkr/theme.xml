@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KONKR — standalone ES-DE theme for the AYANEO KONKR Pocket Block (960x720, 4:3).
+     System view: Art Book Next's native carousel + KONKR parallelogram slices.
+     Game view: Crystal's gamelist geometry carried over VERBATIM (positions,
+     sizes, fonts, bindings, carousel) — re-skinned to ivory paper / charcoal /
+     amber only. Crystal's blue glow/wash, navy gradient and dark shards omitted.
+     Bindings use ES-DE 3.5's <metadata>/<systemdata> properties (NOT ${game.*}
+     or ${system.fullName} — those resolve empty at load and abort the parse). -->
+<theme>
+    <variables>
+        <fontRegular>./fonts/DejaVuSans.ttf</fontRegular>
+        <fontBold>./fonts/DejaVuSans-Bold.ttf</fontBold>
+        <fontMedium>./fonts/Inter-Medium.ttf</fontMedium>
+        <paper>F6EDE6</paper>
+        <ink>2B2B2B</ink>
+        <inkDim>5A554C</inkDim>
+        <amber>E8A33D</amber>
+        <cream>F5EFE0</cream>
+        <railCharcoal>2E2D2B</railCharcoal>
+    </variables>
+
+    <!-- ================= SYSTEM VIEW ================= -->
+    <view name="system">
+        <!-- ivory paper, full bleed -->
+        <image name="bgPaper">
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <path>./art/bg_paper.png</path>
+            <zIndex>0</zIndex>
+        </image>
+
+        <!-- Native horizontal carousel; parallelogram art baked into the PNGs.
+             ZOOM ON THE SELECTED (itemScale 1.4, 2026-11-26): the selected
+             console scales UP 40% as it is selected and the old one scales
+             back down — that is the zoom. The selected still draws at
+             708x619 (itemSize 0.527 x 0.714 x 1.4), so it reveals the same
+             576px (60%) and is never cropped; the neighbours draw at
+             506x442 (71% of the selected), so they read clearly but the
+             selected dominates. itemScale 3 (v1) made neighbours tiny
+             (236px) — that was the complaint that led to uniform scale.
+             itemScale 1 (uniform, 2026-11-25) made everything the same
+             size and the selected only dominated by revealing more
+             sideways. 1.4 is the middle: a real zoom, neighbours still
+             readable. (Art Book Next, for reference, sets itemScale 1 —
+             it does NOT zoom; its selected only looks big because it is
+             fully visible and centred while neighbours are clipped, plus
+             the fan tilt. The zoom here is KONKR's own, added because the
+             user asked for it.) Pitch stays 384 (maxItemCount 2.5). -->
+        <carousel name="sysCarousel">
+            <pos>0 0</pos>
+            <size>1 0.86</size>
+            <origin>0 0</origin>
+            <type>horizontal</type>
+            <color>00000000</color>
+            <textColor>${cream}</textColor>
+            <staticImage>./systems/${system.theme}.png</staticImage>
+            <defaultImage>./systems/_default.png</defaultImage>
+            <itemSize>0.527 0.714</itemSize>
+            <itemScale>1.4</itemScale>
+            <maxItemCount>2.5</maxItemCount>
+            <itemVerticalAlignment>center</itemVerticalAlignment>
+            <itemStacking>ascendingRaised</itemStacking>
+            <!-- neighbours at full brightness like the approved render.
+                 (carousel default opacity is 0.5; dimming is a brightness
+                 factor where 1.0 = full bright, so it stays at 1) -->
+            <unfocusedItemOpacity>1</unfocusedItemOpacity>
+            <!-- non-selected consoles recede a touch: ES-DE has no blur for
+                 carousel items (no blur property anywhere in 3.5), so the
+                 tiny darkening + slight desaturation is the engine's version
+                 of it. 0.85 = 15% darker, 15% less colour; opacity stays 1
+                 so neighbours never go ghostly. -->
+            <unfocusedItemSaturation>0.85</unfocusedItemSaturation>
+            <unfocusedItemDimming>0.85</unfocusedItemDimming>
+            <itemTransitions>animate</itemTransitions>
+            <fastScrolling>true</fastScrolling>
+            <imageInterpolation>linear</imageInterpolation>
+            <reflections>false</reflections>
+            <zIndex>1</zIndex>
+        </carousel>
+
+        <!-- hero logo (changed 2026-11-26 — the user's own generated logos):
+             the selected system's logo is shown big in the middle, DIRECTLY
+             on the poster art — no plate, no background behind it (the
+             charcoal slanted plate was removed 2026-11-26: the user said
+             the logos "still have a horrible background I never asked for"
+             — the plate was that background; Art Book Next puts its logo
+             straight on the art, and so does KONKR now). The user's custom
+             PNGs (./art/hero-custom/<system>.png — white background removed,
+             so they sit transparent on the art, white + orange + black as he
+             made them) load first; any system without a custom PNG falls
+             back to Art Book Next's white SVG logos (./art/hero-logos/).
+             maxSize (not size) so each logo keeps its own aspect ratio —
+             his are 3:1 banners of varying crop, the SVGs vary too.
+             Colour FFFFFF (no tint) so his orange/white/black render exactly
+             as generated; the SVG fallbacks render white. The tallest custom
+             logo (PS1, 3.89:1) renders 173px tall at 672px wide. The old
+             name wordmark (heroName) is gone: the user asked for the actual
+             logos, not the device name in text. A system with neither a
+             custom PNG nor an SVG shows nothing here (no text fallback —
+             the logo IS the hero now). -->
+        <image name="heroLogo">
+            <pos>0.5 0.43</pos>
+            <maxSize>0.70 0.25</maxSize>
+            <origin>0.5 0.5</origin>
+            <path>./art/hero-custom/${system.theme}.png</path>
+            <default>./art/hero-logos/${system.theme}.svg</default>
+            <color>FFFFFF</color>
+            <zIndex>5</zIndex>
+        </image>
+
+        <!-- dark caption rail (art 86%, rail 86-93%): plain dark now; the
+             selected system shows in the hero logo above. -->
+        <image name="railSystem">
+            <pos>0 0.86</pos>
+            <size>1 0.0694</size>
+            <path>./art/rail_system.png</path>
+            <zIndex>5</zIndex>
+        </image>
+        <!-- bottom hints bar (93-100%) -->
+        <image name="railBottom">
+            <pos>0 0.9294</pos>
+            <size>1 0.0706</size>
+            <path>./art/rail_bottom.png</path>
+            <zIndex>5</zIndex>
+        </image>
+
+        <!-- neighbour names: defined per system (gb/gbc/gba theme.xml only);
+             no per-system file -> no neighbour labels, rail stays clean. -->
+        <helpsystem name="sysHelp">
+            <pos>0.5 0.99</pos>
+            <origin>0.5 1</origin>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.024</fontSize>
+            <iconColor>${cream}</iconColor>
+            <textColor>${cream}</textColor>
+            <backgroundColor>00000000</backgroundColor>
+            <entries>left/right,a</entries>
+        </helpsystem>
+    </view>
+
+    <!-- ================= GAME LIST VIEW =================
+         Crystal v18.5.2 gamelist, geometry verbatim. -->
+    <view name="gamelist">
+        <image name="libBackground">
+            <pos>0 0</pos>
+            <size>1 1</size>
+            <origin>0 0</origin>
+            <path>./art/bg_paper.png</path>
+            <zIndex>1</zIndex>
+        </image>
+
+        <!-- clipped-corner metadata card, left -->
+        <image name="libPanelMain">
+            <pos>0.0046875 0.0104167</pos>
+            <size>0.3671875 0.9791667</size>
+            <origin>0 0</origin>
+            <path>./art/panel_card.png</path>
+            <zIndex>10</zIndex>
+        </image>
+
+        <!-- slim graphite system spine with rotated platform mark -->
+        <image name="libRail">
+            <pos>0.3796875 0.025</pos>
+            <size>0.046875 0.95</size>
+            <origin>0 0</origin>
+            <path>./art/rails/${system.name}.png</path>
+            <default>./art/rails/_default.png</default>
+            <zIndex>10</zIndex>
+        </image>
+
+        <image name="libMarquee">
+            <pos>0.01875 0.1666667</pos>
+            <maxSize>0.3375 0.2833333</maxSize>
+            <origin>0 0.5</origin>
+            <imageType>marquee</imageType>
+            <opacity>1.0</opacity>
+            <zIndex>20</zIndex>
+        </image>
+
+        <text name="libDesc">
+            <pos>0.0375 0.2941</pos>
+            <size>0.2984375 0.1125</size>
+            <origin>0 0</origin>
+            <metadata>description</metadata>
+            <fontPath>${fontMedium}</fontPath>
+            <fontSize>0.0140</fontSize>
+            <lineSpacing>1.32</lineSpacing>
+            <color>${inkDim}</color>
+            <horizontalAlignment>left</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <zIndex>20</zIndex>
+        </text>
+
+        <datetime name="libYear">
+            <pos>0.0375 0.4266</pos>
+            <size>0.1796875 0.075</size>
+            <origin>0 0</origin>
+            <metadata>releasedate</metadata>
+            <format>%Y</format>
+            <fontPath>${fontBold}</fontPath>
+            <fontSize>0.044</fontSize>
+            <color>${ink}</color>
+            <horizontalAlignment>left</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <zIndex>20</zIndex>
+        </datetime>
+
+        <rating name="libRating">
+            <pos>0.23125 0.4402</pos>
+            <size>0.109375 0.0291667</size>
+            <origin>0 0</origin>
+            <filledPath>./art/star_filled.png</filledPath>
+            <unfilledPath>./art/star_unfilled.png</unfilledPath>
+            <hideIfZero>true</hideIfZero>
+            <zIndex>20</zIndex>
+        </rating>
+
+        <text name="libGenre">
+            <pos>0.0375 0.5216</pos>
+            <size>0.2984375 0.0291667</size>
+            <origin>0 0</origin>
+            <metadata>genre</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontBold}</fontPath>
+            <fontSize>0.022</fontSize>
+            <color>${ink}</color>
+            <horizontalAlignment>left</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <zIndex>20</zIndex>
+        </text>
+
+        <text name="libPlayers">
+            <pos>0.0375 0.5708</pos>
+            <size>0.140625 0.0270833</size>
+            <origin>0 0</origin>
+            <metadata>players</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontMedium}</fontPath>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>left</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <zIndex>20</zIndex>
+        </text>
+
+        <text name="libDev">
+            <pos>0.1875 0.5708</pos>
+            <size>0.1640625 0.0541667</size>
+            <origin>0 0</origin>
+            <metadata>developer</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontMedium}</fontPath>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>left</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <zIndex>20</zIndex>
+        </text>
+
+        <image name="libScreenshot">
+            <pos>0.0375 0.79</pos>
+            <maxSize>0.29 0.29</maxSize>
+            <origin>0 0.5</origin>
+            <imageType>image</imageType>
+            <zIndex>20</zIndex>
+        </image>
+
+        <video name="libVideo">
+            <pos>0.0375 0.79</pos>
+            <maxSize>0.29 0.29</maxSize>
+            <imageMaxSize>0.29 0.29</imageMaxSize>
+            <origin>0 0.5</origin>
+            <imageType>image</imageType>
+            <delay>5</delay>
+            <zIndex>21</zIndex>
+        </video>
+
+        <image name="libSelectedShadow">
+            <pos>0.703125 0.7708333</pos>
+            <size>0.375 0.075</size>
+            <origin>0.5 0.5</origin>
+            <path>./art/lib_shadow_soft.png</path>
+            <opacity>0.8</opacity>
+            <zIndex>49</zIndex>
+        </image>
+
+        <!-- Crystal's vertical media carousel: selected cart/disc/box large,
+             in full colour, original aspect; neighbours dimmed, clipped. -->
+        <carousel name="gameCarousel">
+            <type>vertical</type>
+            <color>00000000</color>
+            <pos>0.703125 0.4666667</pos>
+            <size>0.5 1.53125</size>
+            <origin>0.5 0.5</origin>
+            <imageType>physicalmedia 3dbox</imageType>
+            <defaultImage>./media_fallbacks/${system.name}.png</defaultImage>
+            <itemSize>0.1875 0.25</itemSize>
+            <itemScale>2.25</itemScale>
+            <maxItemCount>3</maxItemCount>
+            <itemsBeforeCenter>1</itemsBeforeCenter>
+            <itemsAfterCenter>1</itemsAfterCenter>
+            <itemHorizontalAlignment>center</itemHorizontalAlignment>
+            <reflections>false</reflections>
+            <unfocusedItemOpacity>0.45</unfocusedItemOpacity>
+            <unfocusedItemSaturation>0.5</unfocusedItemSaturation>
+            <unfocusedItemDimming>0.55</unfocusedItemDimming>
+            <imageInterpolation>linear</imageInterpolation>
+            <itemTransitions>animate</itemTransitions>
+            <fastScrolling>true</fastScrolling>
+            <zIndex>50</zIndex>
+        </carousel>
+
+        <image name="libTitleRule">
+            <pos>0.703125 0.7458333</pos>
+            <size>0.234375 0.0104167</size>
+            <origin>0.5 0.5</origin>
+            <path>./art/title_rule.png</path>
+            <zIndex>59</zIndex>
+        </image>
+
+        <text name="libGameName">
+            <pos>0.703125 0.7666667</pos>
+            <size>0.58 0.0375</size>
+            <origin>0.5 0.5</origin>
+            <metadata>name</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontBold}</fontPath>
+            <fontSize>0.0275</fontSize>
+            <color>${ink}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <text name="libMetaGenre">
+            <pos>0.6378906 0.7994792</pos>
+            <size>0.140625 0.02</size>
+            <origin>0.5 0.5</origin>
+            <metadata>genre</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <text name="libMetaSep1">
+            <pos>0.7140625 0.7994792</pos>
+            <size>0.0117188 0.02</size>
+            <origin>0.5 0.5</origin>
+            <fontPath>${fontRegular}</fontPath>
+            <text>&#8226;</text>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <datetime name="libMetaYear">
+            <pos>0.7363281 0.7994792</pos>
+            <size>0.0328125 0.02</size>
+            <origin>0.5 0.5</origin>
+            <metadata>releasedate</metadata>
+            <format>%Y</format>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </datetime>
+
+        <text name="libMetaSep2">
+            <pos>0.7585937 0.7994792</pos>
+            <size>0.0117188 0.02</size>
+            <origin>0.5 0.5</origin>
+            <fontPath>${fontRegular}</fontPath>
+            <text>&#8226;</text>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <text name="libMetaPlayers">
+            <pos>0.8015625 0.7994792</pos>
+            <size>0.0742188 0.02</size>
+            <origin>0.5 0.5</origin>
+            <metadata>players</metadata>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.0145</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <text name="libFooter">
+            <pos>0.5 0.953125</pos>
+            <size>0.6 0.03</size>
+            <origin>0.5 0.5</origin>
+            <text>A PLAY &#8226; B BACK</text>
+            <letterCase>uppercase</letterCase>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.0135</fontSize>
+            <color>${inkDim}</color>
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>center</verticalAlignment>
+            <zIndex>60</zIndex>
+        </text>
+
+        <!-- The approved render shows only the footer line, not ES-DE's
+             default help bar (which would overlap it). A theme helpsystem
+             replaces the default one; parked off-screen and transparent. -->
+        <helpsystem name="libHelp">
+            <pos>0.5 1.05</pos>
+            <origin>0.5 1</origin>
+            <fontPath>${fontRegular}</fontPath>
+            <fontSize>0.001</fontSize>
+            <iconColor>00000000</iconColor>
+            <textColor>00000000</textColor>
+            <backgroundColor>00000000</backgroundColor>
+            <entries>a</entries>
+        </helpsystem>
+    </view>
+</theme>

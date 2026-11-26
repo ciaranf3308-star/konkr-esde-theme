@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- KONKR — standalone ES-DE theme for the AYANEO KONKR Pocket Block (960x720, 4:3).
+     Single ivory scheme; no variants, no colour schemes. -->
+<themeCapabilities>
+    <themeName>KONKR</themeName>
+    <aspectRatio>4:3</aspectRatio>
+    <supportsVideo>true</supportsVideo>
+    <supportsMarquee>true</supportsMarquee>
+    <supportsCarousel>true</supportsCarousel>
+    <supportsGameClip>true</supportsGameClip>
+    <hasDarkBackground>false</hasDarkBackground>
+    <supportsLightMode>true</supportsLightMode>
+</themeCapabilities>
