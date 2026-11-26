@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- KONKR — standalone ES-DE theme for the AYANEO KONKR Pocket Block (960x720, 4:3).
-     System view: Art Book Next's native carousel + KONKR parallelogram slices.
+     System view (rebuilt 2026-11-26): Art Book Next's structure verbatim —
+     full-screen poster per system, itemScale 1, hero logo centred on top.
+     The parallelogram slices are gone (they did not render on the Block).
      Game view: Crystal's gamelist geometry carried over VERBATIM (positions,
      sizes, fonts, bindings, carousel) — re-skinned to ivory paper / charcoal /
      amber only. Crystal's blue glow/wash, navy gradient and dark shards omitted.
@@ -19,87 +21,73 @@
         <railCharcoal>2E2D2B</railCharcoal>
     </variables>
 
-    <!-- ================= SYSTEM VIEW ================= -->
+    <!-- ================= SYSTEM VIEW =================
+         REBUILT 2026-11-26 to Art Book Next's structure. The parallelogram
+         slices are gone: on the user's Block they did not render at all —
+         the carousel showed game screenshots + giant system-name text
+         instead of the poster art (video proof ~03:13), while Art Book
+         Next, same posters, same logos, full-screen items, looks clean on
+         the same device. So: each system is ONE full-screen 960x720 poster
+         (./systems/<theme>.png, opaque RGB), the carousel is ABN's exact
+         shape (itemSize 1 1, itemScale 1, no maxItemCount, fan tilt is the
+         engine default 7.5 deg), the hero logo sits centred on top, and
+         the helpsystem is the bottom hints bar. No rails, no zoom, no
+         divider bands. Fallback for a system with no poster (snes,
+         androidapps, ps2, steam, ...): the plain charcoal _default.png
+         tile + the ABN SVG logo — never game art, never giant text.
+         Hardening vs the old design: the carousel textColor is 00000000
+         (ABN does this too), so even if a poster file ever fails to load,
+         the text fallback is invisible instead of a giant system name. -->
     <view name="system">
-        <!-- ivory paper, full bleed -->
-        <image name="bgPaper">
+        <!-- solid black behind the posters; only peeks at the corners
+             during the fan tilt between systems (ABN's systemBackground). -->
+        <image name="bgSystem">
             <pos>0 0</pos>
             <size>1 1</size>
-            <path>./art/bg_paper.png</path>
+            <path>./art/bg_system.png</path>
             <zIndex>0</zIndex>
         </image>
 
-        <!-- Native horizontal carousel; parallelogram art baked into the PNGs.
-             ZOOM ON THE SELECTED (itemScale 1.4, 2026-11-26): the selected
-             console scales UP 40% as it is selected and the old one scales
-             back down — that is the zoom. The selected still draws at
-             708x619 (itemSize 0.527 x 0.714 x 1.4), so it reveals the same
-             576px (60%) and is never cropped; the neighbours draw at
-             506x442 (71% of the selected), so they read clearly but the
-             selected dominates. itemScale 3 (v1) made neighbours tiny
-             (236px) — that was the complaint that led to uniform scale.
-             itemScale 1 (uniform, 2026-11-25) made everything the same
-             size and the selected only dominated by revealing more
-             sideways. 1.4 is the middle: a real zoom, neighbours still
-             readable. (Art Book Next, for reference, sets itemScale 1 —
-             it does NOT zoom; its selected only looks big because it is
-             fully visible and centred while neighbours are clipped, plus
-             the fan tilt. The zoom here is KONKR's own, added because the
-             user asked for it.) Pitch stays 384 (maxItemCount 2.5). -->
+        <!-- Art Book Next's system carousel, verbatim structure:
+             full-screen items, itemScale 1 (ABN does NOT zoom — its
+             selected only looks big because it is fully visible and
+             centred while neighbours are clipped, plus the fan tilt),
+             no maxItemCount (engine default 3.0, same as ABN), no
+             itemStacking, itemTransitions animate, fastScrolling true.
+             Neighbours at full brightness/opacity/saturation (1/1/1) —
+             the old 0.85 dimming belonged to the slice design. -->
         <carousel name="sysCarousel">
             <pos>0 0</pos>
-            <size>1 0.86</size>
+            <size>1 1</size>
             <origin>0 0</origin>
             <type>horizontal</type>
             <color>00000000</color>
-            <textColor>${cream}</textColor>
+            <textColor>00000000</textColor>
             <staticImage>./systems/${system.theme}.png</staticImage>
             <defaultImage>./systems/_default.png</defaultImage>
-            <itemSize>0.527 0.714</itemSize>
-            <itemScale>1.4</itemScale>
-            <maxItemCount>2.5</maxItemCount>
+            <itemSize>1 1</itemSize>
+            <itemScale>1</itemScale>
             <itemVerticalAlignment>center</itemVerticalAlignment>
-            <itemStacking>ascendingRaised</itemStacking>
-            <!-- neighbours at full brightness like the approved render.
-                 (carousel default opacity is 0.5; dimming is a brightness
-                 factor where 1.0 = full bright, so it stays at 1) -->
             <unfocusedItemOpacity>1</unfocusedItemOpacity>
-            <!-- non-selected consoles recede a touch: ES-DE has no blur for
-                 carousel items (no blur property anywhere in 3.5), so the
-                 tiny darkening + slight desaturation is the engine's version
-                 of it. 0.85 = 15% darker, 15% less colour; opacity stays 1
-                 so neighbours never go ghostly. -->
-            <unfocusedItemSaturation>0.85</unfocusedItemSaturation>
-            <unfocusedItemDimming>0.85</unfocusedItemDimming>
+            <unfocusedItemSaturation>1</unfocusedItemSaturation>
+            <unfocusedItemDimming>1</unfocusedItemDimming>
             <itemTransitions>animate</itemTransitions>
             <fastScrolling>true</fastScrolling>
-            <imageInterpolation>linear</imageInterpolation>
-            <reflections>false</reflections>
             <zIndex>1</zIndex>
         </carousel>
 
-        <!-- hero logo (changed 2026-11-26 — the user's own generated logos):
-             the selected system's logo is shown big in the middle, DIRECTLY
-             on the poster art — no plate, no background behind it (the
-             charcoal slanted plate was removed 2026-11-26: the user said
-             the logos "still have a horrible background I never asked for"
-             — the plate was that background; Art Book Next puts its logo
-             straight on the art, and so does KONKR now). The user's custom
-             PNGs (./art/hero-custom/<system>.png — white background removed,
-             so they sit transparent on the art, white + orange + black as he
-             made them) load first; any system without a custom PNG falls
-             back to Art Book Next's white SVG logos (./art/hero-logos/).
-             maxSize (not size) so each logo keeps its own aspect ratio —
-             his are 3:1 banners of varying crop, the SVGs vary too.
-             Colour FFFFFF (no tint) so his orange/white/black render exactly
-             as generated; the SVG fallbacks render white. The tallest custom
-             logo (PS1, 3.89:1) renders 173px tall at 672px wide. The old
-             name wordmark (heroName) is gone: the user asked for the actual
-             logos, not the device name in text. A system with neither a
-             custom PNG nor an SVG shows nothing here (no text fallback —
-             the logo IS the hero now). -->
+        <!-- hero logo: the user's own generated logos, DIRECTLY on the
+             poster art — no plate, no background (the charcoal plate was
+             removed 2026-11-26 at his word). Custom PNGs
+             (./art/hero-custom/<system>.png, transparent, pre-scaled to
+             672px wide) load first; any system without one falls back to
+             Art Book Next's white SVG logos (./art/hero-logos/). Centred
+             at 0.5 0.5, ABN's logo position. maxSize (not size) so each
+             logo keeps its own aspect; colour FFFFFF (no tint). Exactly
+             ONE hero element — the overlapping-logos bug must not return.
+             No heroName text, no heroPlate. -->
         <image name="heroLogo">
-            <pos>0.5 0.43</pos>
+            <pos>0.5 0.5</pos>
             <maxSize>0.70 0.25</maxSize>
             <origin>0.5 0.5</origin>
             <path>./art/hero-custom/${system.theme}.png</path>
@@ -108,32 +96,21 @@
             <zIndex>5</zIndex>
         </image>
 
-        <!-- dark caption rail (art 86%, rail 86-93%): plain dark now; the
-             selected system shows in the hero logo above. -->
-        <image name="railSystem">
-            <pos>0 0.86</pos>
-            <size>1 0.0694</size>
-            <path>./art/rail_system.png</path>
-            <zIndex>5</zIndex>
-        </image>
-        <!-- bottom hints bar (93-100%) -->
-        <image name="railBottom">
-            <pos>0 0.9294</pos>
-            <size>1 0.0706</size>
-            <path>./art/rail_bottom.png</path>
-            <zIndex>5</zIndex>
-        </image>
-
-        <!-- neighbour names: defined per system (gb/gbc/gba theme.xml only);
-             no per-system file -> no neighbour labels, rail stays clean. -->
-        <helpsystem name="sysHelp">
-            <pos>0.5 0.99</pos>
+        <!-- bottom hints bar, ABN-style: the ES-DE helpsystem itself,
+             dark pill at the bottom (SELECT / CHOOSE). No rail images. -->
+        <helpsystem name="help-system-view">
+            <scope>view</scope>
+            <pos>0.5 0.9375</pos>
             <origin>0.5 1</origin>
             <fontPath>${fontRegular}</fontPath>
-            <fontSize>0.024</fontSize>
+            <fontSize>0.03</fontSize>
             <iconColor>${cream}</iconColor>
             <textColor>${cream}</textColor>
-            <backgroundColor>00000000</backgroundColor>
+            <backgroundColor>181818</backgroundColor>
+            <backgroundCornerRadius>0.005</backgroundCornerRadius>
+            <backgroundHorizontalPadding>0.01 0.01</backgroundHorizontalPadding>
+            <backgroundVerticalPadding>0.015 0.02</backgroundVerticalPadding>
+            <entryRelativeScale>0.9</entryRelativeScale>
             <entries>left/right,a</entries>
         </helpsystem>
     </view>
